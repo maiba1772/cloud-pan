@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件分享 - Cloud Drive</title>
+    <link rel="stylesheet" href="css/share.css">
+</head>
+<body>
+    <div class="container">
+        <div class="password-screen" id="passwordScreen">
+            <div class="password-box">
+                <div class="password-icon">🔐</div>
+                <h2>此分享需要密码</h2>
+                <p>请输入访问密码以继续</p>
+                <input type="password" id="passwordInput" placeholder="请输入密码" />
+                <button class="btn btn-primary" id="verifyPasswordBtn">
+                    <span>🔓</span> 验证密码
+                </button>
+                <p class="error-message" id="passwordError"></p>
+            </div>
+        </div>
+
+        <div class="share-screen" id="shareScreen" style="display: none;">
+            <header class="header">
+                <div class="logo">
+                    <span class="logo-icon">☁️</span>
+                    <h1 id="shareTitle">文件分享</h1>
+                </div>
+                <div class="share-info">
+                    <span class="share-badge" id="shareBadge"></span>
+                    <button class="btn btn-primary" id="openUploadModalBtn" style="margin-left: 10px; display: none;">
+                        <span>📤</span> 上传文件
+                    </button>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div class="breadcrumb" id="breadcrumb">
+                    <span class="breadcrumb-item" data-path="">首页</span>
+                </div>
+
+                <div class="content-area">
+                    <div class="files-grid" id="filesGrid">
+                        <div class="empty-state">
+                            <span class="empty-icon">📭</span>
+                            <p>暂无文件</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <div class="modal" id="fileModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="modalTitle">文件详情</h3>
+                        <button class="close-btn" id="closeModal">&times;</button>
+                    </div>
+                    <div class="modal-body" id="modalBody"></div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" id="modalClose">关闭</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-modal" id="uploadModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>上传文件</h3>
+                        <button class="close-btn" id="closeUploadModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="upload-area" id="uploadArea">
+                            <div class="upload-content">
+                                <span class="upload-icon">☁️</span>
+                                <h3>拖拽文件到这里</h3>
+                                <p>或者点击选择文件</p>
+                                <input type="file" id="fileInput" multiple hidden>
+                                <button class="btn btn-primary" id="selectFileBtn">
+                                    选择文件
+                                </button>
+                            </div>
+                            <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e0e0e0;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600;">上传到目录（可选）</label>
+                                <select id="uploadDirectory" 
+                                    style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                                    <option value="">根目录</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="upload-list" id="uploadList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-screen" id="errorScreen" style="display: none;">
+            <div class="error-box">
+                <div class="error-icon">❌</div>
+                <h2>分享不存在或已失效</h2>
+                <p>请检查分享链接是否正确</p>
+                <a href="index.html" class="btn btn-primary">
+                    <span>🏠</span> 返回首页
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/share.js"></script>
+</body>
+</html>

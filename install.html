@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云端存储 - 安装向导</title>
+    <link rel="stylesheet" href="css/install.css">
+    <script>
+        if (localStorage.getItem('cloudDriveConfig')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="install-container">
+        <div class="install-header">
+            <div class="logo">
+                <span class="logo-icon">☁️</span>
+                <h1>云端存储系统</h1>
+            </div>
+            <div class="install-progress">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">欢迎</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">数据存储</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">文件存储</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">配置</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <span class="step-number">5</span>
+                    <span class="step-label">许可协议</span>
+                </div>
+                <div class="progress-step" data-step="6">
+                    <span class="step-number">6</span>
+                    <span class="step-label">安装</span>
+                </div>
+                <div class="progress-step" data-step="7">
+                    <span class="step-number">7</span>
+                    <span class="step-label">完成</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="install-content">
+            <div class="install-step" id="step1">
+                <div class="welcome-content">
+                    <div class="welcome-icon">🎉</div>
+                    <h2>欢迎使用云端存储系统</h2>
+                    <p class="welcome-desc">这是一个功能强大的文件管理解决方案，支持多种存储方式，界面优美，操作简单。</p>
+                    
+                    <div class="feature-list">
+                        <div class="feature-item">
+                            <span class="feature-icon">📤</span>
+                            <div class="feature-text">
+                                <h3>文件上传</h3>
+                                <p>支持拖拽上传，批量上传</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">👁️</span>
+                            <div class="feature-text">
+                                <h3>文件预览</h3>
+                                <p>支持图片、视频、音频预览</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">🔗</span>
+                            <div class="feature-text">
+                                <h3>文件外链</h3>
+                                <p>一键生成外链地址</p>
+                            </div>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-icon">📊</span>
+                            <div class="feature-text">
+                                <h3>存储统计</h3>
+                                <p>实时显示存储使用情况</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="welcome-actions">
+                        <button class="btn btn-secondary" id="cancelBtn">
+                            ✕ 取消
+                        </button>
+                        <button class="btn btn-primary btn-next" id="nextStep1">
+                            开始安装 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="install-step" id="step2" style="display: none;">
+                <h2>选择数据存储方式</h2>
+                <p class="step-desc">请选择用于存储文件元数据的存储方式</p>
+                
+                <div class="storage-options">
+                    <div class="storage-option" data-type="local">
+                        <div class="option-icon">💾</div>
+                        <div class="option-content">
+                            <h3>本地存储</h3>
+                            <p>使用JSON文件存储元数据，无需数据库</p>
+                            <ul class="option-features">
+                                <li>✓ 无需配置数据库</li>
+                                <li>✓ 安装简单快速</li>
+                                <li>✓ 适合个人使用</li>
+                            </ul>
+                            <span class="option-badge">推荐</span>
+                        </div>
+                    </div>
+                    
+                    <div class="storage-option" data-type="mysql">
+                        <div class="option-icon">🗄️</div>
+                        <div class="option-content">
+                            <h3>MySQL存储</h3>
+                            <p>使用MySQL数据库存储元数据</p>
+                            <ul class="option-features">
+                                <li>✓ 支持大量文件</li>
+                                <li>✓ 查询性能更好</li>
+                                <li>✓ 支持软删除</li>
+                            </ul>
+                            <span class="option-badge">高级</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary btn-back" id="backStep2">
+                        ← 上一步
+                    </button>
+                    <button class="btn btn-primary btn-next" id="nextStep2">
+                        下一步 →
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-step" id="step3" style="display: none;">
+                <h2>选择文件存储方式</h2>
+                <p class="step-desc">请选择用于存储实际文件的方式</p>
+                
+                <div class="storage-options">
+                    <div class="storage-option" data-type="local-file">
+                        <div class="option-icon">💾</div>
+                        <div class="option-content">
+                            <h3>本地存储</h3>
+                            <p>文件保存在本地服务器</p>
+                            <ul class="option-features">
+                                <li>✓ 访问速度快</li>
+                                <li>✓ 无需网络传输</li>
+                                <li>✓ 完全控制数据</li>
+                            </ul>
+                            <span class="option-badge">推荐</span>
+                        </div>
+                    </div>
+                    
+                    <div class="storage-option" data-type="ftp">
+                        <div class="option-icon">📡</div>
+                        <div class="option-content">
+                            <h3>FTP存储</h3>
+                            <p>上传文件到FTP服务器</p>
+                            <ul class="option-features">
+                                <li>✓ 远程存储</li>
+                                <li>✓ 节省本地空间</li>
+                                <li>✓ 支持SSL加密</li>
+                            </ul>
+                            <span class="option-badge">远程</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary btn-back" id="backStep3">
+                        ← 上一步
+                    </button>
+                    <button class="btn btn-primary btn-next" id="nextStep3">
+                        下一步 →
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-step" id="step4" style="display: none;">
+                <h2>配置存储信息</h2>
+                <p class="step-desc">请填写存储配置信息</p>
+                
+                <div class="config-form" id="localFileConfig">
+                    <div class="form-group">
+                        <label>存储路径</label>
+                        <input type="text" id="localFilePath" value="data/cc">
+                        <span class="form-hint">文件将保存在此目录（可自定义）</span>
+                    </div>
+                    <div class="form-group">
+                        <label>配置文件保存位置</label>
+                        <select id="configSaveLocation">
+                            <option value="localStorage">浏览器本地存储（LocalStorage）</option>
+                            <option value="server">服务器配置文件（config.json）</option>
+                        </select>
+                        <span class="form-hint">选择配置文件的保存方式</span>
+                    </div>
+                    <div class="form-group">
+                        <label>高级选项</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="enableAccessLog" checked>
+                                <span>启用访问日志</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="enableErrorLog" checked>
+                                <span>启用错误日志</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="enableDebugMode">
+                                <span>启用调试模式</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="config-form" id="ftpConfig" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>FTP主机</label>
+                            <input type="text" id="ftpHost" placeholder="ftp.example.com">
+                        </div>
+                        <div class="form-group">
+                            <label>FTP端口</label>
+                            <input type="text" id="ftpPort" placeholder="21" value="21">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" id="ftpUser" placeholder="username">
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" id="ftpPassword" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label>存储路径</label>
+                        <input type="text" id="ftpPath" placeholder="/public_html/uploads">
+                    </div>
+                    <div class="form-group">
+                        <label>使用SSL/TLS</label>
+                        <select id="ftpSsl">
+                            <option value="false">否</option>
+                            <option value="true">是</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>测试连接</label>
+                        <button class="btn btn-secondary" id="testFtpBtn">
+                            🔍 测试连接
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary btn-back" id="backStep4">
+                        ← 上一步
+                    </button>
+                    <button class="btn btn-primary btn-next" id="nextStep4">
+                        下一步 →
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-step" id="step5" style="display: none;">
+                <h2>配置数据存储</h2>
+                <p class="step-desc">请填写数据存储配置信息</p>
+                
+                <div class="config-form" id="mysqlConfig">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>数据库主机</label>
+                            <input type="text" id="mysqlHost" placeholder="localhost">
+                        </div>
+                        <div class="form-group">
+                            <label>数据库端口</label>
+                            <input type="text" id="mysqlPort" placeholder="3306" value="3306">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>数据库名称</label>
+                        <input type="text" id="mysqlDatabase" placeholder="cloud_drive">
+                    </div>
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" id="mysqlUser" placeholder="root">
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" id="mysqlPassword" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label>测试连接</label>
+                        <button class="btn btn-secondary" id="testMysqlBtn">
+                            🔍 测试连接
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary btn-back" id="backStep5">
+                        ← 上一步
+                    </button>
+                    <button class="btn btn-primary btn-next" id="nextStep5">
+                        下一步 →
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-step" id="step6" style="display: none;">
+                <h2>许可协议</h2>
+                <p class="step-desc">请阅读并同意以下许可协议</p>
+                
+                <div class="license-content">
+                    <div class="license-section">
+                        <h3>软件许可</h3>
+                        <p>本软件是免费开源软件，您可以自由使用、修改和分发。</p>
+                    </div>
+                    
+                    <div class="license-section">
+                        <h3>隐私政策</h3>
+                        <p>您的文件数据存储在您配置的存储位置，我们不会收集或访问您的文件。</p>
+                    </div>
+                    
+                    <div class="license-section">
+                        <h3>使用条款</h3>
+                        <ul>
+                            <li>本软件按"现状"和"可用"提供，不提供任何明示或暗示的保证</li>
+                            <li>使用本软件的风险由您自行承担</li>
+                            <li>我们不对因使用本软件而导致的任何损失承担责任</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="license-actions">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeLicense">
+                        <span>我已阅读并同意以上许可协议</span>
+                    </label>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-secondary btn-back" id="backStep6">
+                        ← 上一步
+                    </button>
+                    <button class="btn btn-primary btn-next" id="nextStep6">
+                        开始安装 →
+                    </button>
+                </div>
+            </div>
+
+            <div class="install-step" id="step7" style="display: none;">
+                <h2>正在安装</h2>
+                <p class="step-desc">请稍候，系统正在配置...</p>
+                
+                <div class="install-progress-content">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="installProgress"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">0%</span>
+                    </div>
+                    
+                    <div class="install-steps-list" id="installSteps">
+                        <div class="install-step-item" data-step="create-dirs">
+                            <span class="step-status">⏳</span>
+                            <span class="step-text">创建目录结构</span>
+                        </div>
+                        <div class="install-step-item" data-step="save-config">
+                            <span class="step-status">⏳</span>
+                            <span class="step-text">保存配置信息</span>
+                        </div>
+                        <div class="install-step-item" data-step="test-connection">
+                            <span class="step-status">⏳</span>
+                            <span class="step-text">测试存储连接</span>
+                        </div>
+                        <div class="install-step-item" data-step="init-storage">
+                            <span class="step-status">⏳</span>
+                            <span class="step-text">初始化存储</span>
+                        </div>
+                        <div class="install-step-item" data-step="complete">
+                            <span class="step-status">⏳</span>
+                            <span class="step-text">完成安装</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="install-step" id="step8" style="display: none;">
+                <div class="success-content">
+                    <div class="success-icon">✅</div>
+                    <h2>安装完成！</h2>
+                    <p class="success-desc">您的云端存储系统已成功安装并配置完成。</p>
+                    
+                    <div class="config-summary" id="configSummary">
+                    </div>
+                    
+                    <div class="success-actions">
+                        <button class="btn btn-secondary" id="reinstallBtn">
+                            🔄 重新安装
+                        </button>
+                        <button class="btn btn-primary" id="goToAppBtn">
+                            🚀 进入系统 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="install-footer">
+            <p>云端存储系统 v1.0</p>
+        </div>
+    </div>
+
+    <script src="js/install.js"></script>
+</body>
+</html>

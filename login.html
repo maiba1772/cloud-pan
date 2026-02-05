@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - 云端存储系统</title>
+    <link rel="stylesheet" href="css/login.css">
+    <script>
+        // 检查是否已登录
+        if (localStorage.getItem('cloudDriveToken')) {
+            window.location.href = 'index.html';
+        }
+        // 检查是否已安装
+        if (!localStorage.getItem('cloudDriveConfig')) {
+            window.location.href = 'install.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="logo">
+                    <span class="logo-icon">☁️</span>
+                    <h1>云端存储系统</h1>
+                </div>
+                <p class="login-subtitle">安全登录</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="username" name="username" placeholder="请输入用户名" required autofocus>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="请输入密码" required>
+                        <button type="button" class="toggle-password" id="togglePassword" title="显示/隐藏密码">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>记住我</span>
+                    </label>
+                    <a href="#" class="forgot-password" id="forgotPassword">忘记密码？</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login" id="loginBtn">
+                    <span class="btn-text">登 录</span>
+                    <span class="btn-loading" style="display: none;">登录中...</span>
+                </button>
+            </form>
+
+            <div class="login-error" id="loginError" style="display: none;">
+                <span class="error-icon">⚠️</span>
+                <span class="error-text"></span>
+            </div>
+
+            <div class="login-footer">
+                <p>默认账号: admin / admin</p>
+                <p class="security-notice">首次登录后请立即修改密码</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 强制修改密码模态框 -->
+    <div class="modal" id="forceChangePasswordModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔐 强制修改密码</h3>
+                <p class="modal-subtitle">为了您的账号安全，请修改默认密码</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>当前密码</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="currentPassword" placeholder="请输入当前密码" readonly>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>新密码</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔐</span>
+                        <input type="password" id="newPassword" placeholder="请输入新密码（至少6位）" required>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar"></div>
+                        <span class="strength-text">密码强度</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>确认新密码</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔐</span>
+                        <input type="password" id="confirmPassword" placeholder="请再次输入新密码" required>
+                    </div>
+                </div>
+                <div class="password-requirements">
+                    <h4>密码要求：</h4>
+                    <ul>
+                        <li id="req-length">✓ 至少6个字符</li>
+                        <li id="req-number">✓ 包含数字</li>
+                        <li id="req-letter">✓ 包含字母</li>
+                        <li id="req-special">○ 包含特殊字符（推荐）</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="confirmChangePassword">确认修改</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

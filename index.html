@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云端存储 - Cloud Drive</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        // 检查是否已安装
+        if (!localStorage.getItem('cloudDriveConfig')) {
+            window.location.href = 'install.html';
+        }
+        
+        // 检查登录状态
+        function checkLoginStatus() {
+            const tokenData = localStorage.getItem('cloudDriveToken') || sessionStorage.getItem('cloudDriveToken');
+            if (!tokenData) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            
+            try {
+                const loginData = JSON.parse(tokenData);
+                // 检查token是否过期（简单检查）
+                if (loginData.loginTime) {
+                    const loginTime = new Date(loginData.loginTime);
+                    const now = new Date();
+                    const hoursDiff = (now - loginTime) / (1000 * 60 * 60);
+                    
+                    // 如果超过24小时，需要重新登录
+                    if (hoursDiff > 24) {
+                        localStorage.removeItem('cloudDriveToken');
+                        sessionStorage.removeItem('cloudDriveToken');
+                        window.location.href = 'login.html';
+                        return false;
+                    }
+                }
+                
+                return true;
+            } catch (e) {
+                window.location.href = 'login.html';
+                return false;
+            }
+        }
+        
+        // 页面加载时检查登录状态
+        if (!checkLoginStatus()) {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">☁️</span>
+                <h1>云端存储</h1>
+            </div>
+            <div class="storage-info">
+                <span class="storage-text">已使用: <span id="usedStorage">0 KB</span></span>
+                <div class="user-menu" id="userMenu">
+                    <button class="btn btn-icon user-btn" id="userBtn" title="用户菜单">
+                        <span class="user-avatar">👤</span>
+                        <span class="user-name" id="userName">admin</span>
+                    </button>
+                    <div class="user-dropdown" id="userDropdown" style="display: none;">
+                        <div class="dropdown-header">
+                            <span class="dropdown-avatar">👤</span>
+                            <div class="dropdown-info">
+                                <span class="dropdown-name" id="dropdownUserName">admin</span>
+                                <span class="dropdown-role" id="dropdownUserRole">管理员</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item" id="changePasswordItem">
+                            <span>🔐</span> 修改密码
+                        </a>
+                        <a href="#" class="dropdown-item" id="logoutItem">
+                            <span>🚪</span> 退出登录
+                        </a>
+                    </div>
+                </div>
+                <button class="btn btn-icon" id="settingsBtn" title="设置">
+                    ⚙️
+                </button>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <div class="nav-item active" data-section="files">
+                        <span class="nav-icon">📁</span>
+                        <span>我的文件</span>
+                    </div>
+                    <div class="nav-item" data-section="upload">
+                        <span class="nav-icon">⬆️</span>
+                        <span>上传文件</span>
+                    </div>
+                    <div class="nav-item" data-section="shares">
+                        <span class="nav-icon">🔗</span>
+                        <span>外链管理</span>
+                    </div>
+                    <div class="nav-item" data-section="trash">
+                        <span class="nav-icon">🗑️</span>
+                        <span>回收站</span>
+                    </div>
+                </nav>
+            </aside>
+
+            <section class="content-area">
+                <div class="section files-section active" id="filesSection">
+                    <div class="section-header">
+                        <h2>我的文件</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="createDirBtn">
+                                <span>📁</span> 新建目录
+                            </button>
+                            <button class="btn btn-primary" id="uploadBtn">
+                                <span>📤</span> 上传文件
+                            </button>
+                            <button class="btn btn-secondary" id="refreshBtn">
+                                <span>🔄</span> 刷新
+                            </button>
+                        </div>
+                    </div>
+                    <div class="breadcrumb" id="breadcrumb">
+                        <span class="breadcrumb-item" data-path="">首页</span>
+                    </div>
+                    <div class="files-grid" id="filesGrid">
+                        <div class="empty-state">
+                            <span class="empty-icon">📭</span>
+                            <p>暂无文件</p>
+                            <p class="empty-hint">点击"上传文件"开始使用</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section upload-section" id="uploadSection">
+                    <div class="section-header">
+                        <h2>上传文件</h2>
+                    </div>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <span class="upload-icon">☁️</span>
+                            <h3>拖拽文件到这里</h3>
+                            <p>或者点击选择文件</p>
+                            <input type="file" id="fileInput" multiple hidden>
+                            <button class="btn btn-primary" id="selectFileBtn">
+                                选择文件
+                            </button>
+                        </div>
+                    </div>
+                    <div class="upload-list" id="uploadList"></div>
+                </div>
+
+                <div class="section trash-section" id="trashSection">
+                    <div class="section-header">
+                        <h2>回收站</h2>
+                        <div class="actions">
+                            <button class="btn btn-danger" id="emptyTrashBtn">
+                                <span>🗑️</span> 清空回收站
+                            </button>
+                        </div>
+                    </div>
+                    <div class="files-grid" id="trashGrid">
+                        <div class="empty-state">
+                            <span class="empty-icon">♻️</span>
+                            <p>回收站为空</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section shares-section" id="sharesSection">
+                    <div class="section-header">
+                        <h2>外链管理</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="createShareBtn">
+                                <span>🔗</span> 创建外链
+                            </button>
+                        </div>
+                    </div>
+                    <div class="files-grid" id="sharesGrid">
+                        <div class="empty-state">
+                            <span class="empty-icon">🔗</span>
+                            <p>暂无外链</p>
+                            <p class="empty-hint">点击"创建外链"开始分享</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div class="modal" id="fileModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">文件详情</h3>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="modalClose">关闭</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="moveFileModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>移动文件到目录</h3>
+                    <button class="close-btn" id="closeMoveFileModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">目标目录</label>
+                        <select id="moveFileDirectory" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                            <option value="">根目录</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelMoveFile">取消</button>
+                    <button class="btn btn-primary" id="confirmMoveFile">移动</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="createDirModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>新建目录</h3>
+                    <button class="close-btn" id="closeCreateDirModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">目录名称</label>
+                        <input type="text" id="dirNameInput" placeholder="请输入目录名称" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelCreateDir">取消</button>
+                    <button class="btn btn-primary" id="confirmCreateDir">创建</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="createShareModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>创建外链</h3>
+                    <button class="close-btn" id="closeCreateShareModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">分享名称</label>
+                        <input type="text" id="shareNameInput" placeholder="请输入分享名称" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">访问根目录（可选）</label>
+                        <select id="shareRootDirectory" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                            <option value="">根目录（所有文件）</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">访问密码（可选）</label>
+                        <input type="password" id="sharePasswordInput" placeholder="留空则无需密码" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">权限设置</label>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="allowDownload" checked>
+                                <span>允许下载</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="allowPreview" checked>
+                                <span>允许预览</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="allowUpload">
+                                <span>允许上传</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="allowDelete">
+                                <span>允许删除</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelCreateShare">取消</button>
+                    <button class="btn btn-primary" id="confirmCreateShare">创建</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="shareLinkModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>外链已创建</h3>
+                    <button class="close-btn" id="closeShareLinkModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <div style="font-size: 64px;">🎉</div>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <strong>外链地址:</strong>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <input type="text" id="shareLinkInput" readonly 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <button class="btn btn-primary" id="copyShareLink" style="width: 100%;">
+                        📋 复制外链
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 修改密码模态框 -->
+        <div class="modal" id="changePasswordModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>🔐 修改密码</h3>
+                    <button class="close-btn" id="closeChangePasswordModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">当前密码</label>
+                        <input type="password" id="currentPasswordInput" placeholder="请输入当前密码" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">新密码</label>
+                        <input type="password" id="newPasswordInput" placeholder="请输入新密码（至少6位）" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600;">确认新密码</label>
+                        <input type="password" id="confirmNewPasswordInput" placeholder="请再次输入新密码" 
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="cancelChangePassword">取消</button>
+                    <button class="btn btn-primary" id="confirmChangePassword">确认修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
